@@ -12,19 +12,34 @@ require 'faker'
 Appointment.destroy_all
 Doctor.destroy_all
 Patient.destroy_all
+ListOfSpecialty.destroy_all
+Specialty.destroy_all
 
 doctors = []
 patients = []
 cities = []
+specialties = []
 
 20.times do
+  specialty_name = Specialty.create(
+    name_of_specialty: [
+      "Cardiologist", "Dermatologist", "Pediatrician", "Orthopedic Surgeon",
+      "Neurologist", "Ophthalmologist", "Gastroenterologist", "Endocrinologist",
+      "Urologist", "Rheumatologist", "Pulmonologist", "Oncologist",
+      "Hematologist", "Dentist", "Psychiatrist", "Allergist", "Dietitian",
+      "Podiatrist", "Radiologist", "Nephrologist", "Gerontologist", "Dermatopathologist",
+      "Oncologic Surgeon", "Cardiothoracic Surgeon", "Maxillofacial Surgeon", "Plastic Surgeon",
+      "Gynecologist", "Obstetrician", "Anesthesiologist", "Pathologist", "Family Physician"
+    ].sample
+    )
+  specialties << specialty_name
+
   city_name = City.create(name: Faker::Address.city)
   cities << city_name
 
   doctor = Doctor.create(
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name,
-    speciality: ["Cardiologist", "Dermatologist", "Pediatrician", "Orthopedic Surgeon"].sample,
     zip_code: ["12345", "56789", "98765", "43210"].sample,
     city: cities.sample
   )
@@ -41,7 +56,10 @@ end
 20.times do
     doctor = doctors.sample
     patient = patients.sample
+    specialty = specialties.sample
 
+    doctor_specialty = ListOfSpecialty.create(doctor: doctor, specialty: specialty, last_name: doctor.last_name,
+    specialty_name: specialty.name_of_specialty)
   
     # Проверка на уникальность связи между врачом и пациентом
     unless Appointment.exists?(doctor: doctor, patient: patient)
